@@ -3,11 +3,10 @@
 import { AppRegistry } from 'react-native';
 import App from './navigation';
 import { name as appName } from './app.json';
-
 import axios from 'axios';
 
 
-axios.defaults.baseURL = 'https://72fb801b.ngrok.io/';
+axios.defaults.baseURL = 'http://localhost:3000/';
 
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {

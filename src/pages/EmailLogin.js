@@ -4,11 +4,10 @@ import axios from 'axios';
 import { Button, Input, H2 } from 'nachos-ui';
 import { StackActions, NavigationActions } from 'react-navigation';
 
-export default class Login extends Component {
+export default class EmailLogin extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      phone: '',
       password: '',
       email: ''
     }
@@ -16,27 +15,19 @@ export default class Login extends Component {
 
   //登录
   onPress = async () => {
-    const { phone, password } = this.state;
+    const { email, password } = this.state;
     try {
-      const { data } = await axios.get('login/cellphone', {
+      const { data } = await axios.get('login', {
         params: {
-          phone,
+          email,
           password
         }
       });
       const resetToHome = StackActions.reset({
         index: 0,
         actions: [
-          NavigationActions.navigate({
-            routeName: 'Home',
-            params: {
-              data
-            }
-          })
+          NavigationActions.navigate({ routeName: 'Home' })
         ],
-        params: {
-          data
-        }
       });
       this.props.navigation.dispatch(resetToHome);
     } catch (error) {
@@ -44,19 +35,19 @@ export default class Login extends Component {
     }
   }
 
-  //切换至邮箱登录
-  changeToEmail = () => {
-    this.props.navigation.navigate('EmailLogin');
+  //切换至手机号登录
+  changeToPhone = () => {
+    this.props.navigation.navigate('Login');
   }
 
   render() {
     const { phone, password } = this.state;
     return (
       <View style={styles.container}>
-        <H2 style={styles.welcome}>手机号登录</H2>
+        <H2 style={styles.welcome}>邮箱登录</H2>
         <View style={styles.inputArea}>
           <Input
-            placeholder='手机号'
+            placeholder='邮箱账号'
             style={styles.input}
             value={phone}
             onChangeText={phone => this.setState({ phone })}
@@ -75,7 +66,7 @@ export default class Login extends Component {
           <Button onPress={this.onPress}>登录</Button>
         </View>
         <View style={styles.button}>
-          <Button onPress={this.changeToEmail}>切换至邮箱登录</Button>
+          <Button onPress={this.changeToPhone}>切换至手机号登录</Button>
         </View>
       </View>
     );
