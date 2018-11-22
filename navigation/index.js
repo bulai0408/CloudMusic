@@ -8,6 +8,7 @@ import LoadingScreen from '../src/pages/Loading';
 import LoginScreen from '../src/pages/Login';
 import EmailLoginScreen from '../src/pages/EmailLogin';
 import HomeScreen from '../src/pages/Home';
+import MusicScreen from '../src/pages/Music';
 
 const AppNavigator = createStackNavigator({
   Loading: {
@@ -39,6 +40,9 @@ const AppNavigator = createStackNavigator({
     navigationOptions: {
       header: null
     }
+  },
+  Music: {
+    screen: MusicScreen,
   },
 });
 

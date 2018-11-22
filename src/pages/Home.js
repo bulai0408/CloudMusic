@@ -29,10 +29,12 @@ export default class Home extends Component {
 
   getSource = async (id) => {
     const { data: { data } } = await axios.get(`song/url?id=${id}`);
-    console.log(data);
     const song = data[0];
-    const Sound = this.Sound(song.url);
-    this.setState({ song, Sound });
+    // const Sound = this.Sound(song.url);
+    // this.setState({ song, Sound });
+    this.props.navigation.navigate('Music', {
+      musicItem:song
+    });
   }
 
   //播放器
