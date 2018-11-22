@@ -6,6 +6,7 @@ import Sound from 'react-native-sound';
 import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
 
 import FacebookTabBar from '../components/FacebookTabBar';
+import { BACKGROUND_COLOR } from '../constant';
 
 // Enable playback in silence mode
 Sound.setCategory('Playback');
@@ -54,7 +55,7 @@ export default class Home extends Component {
     // const Sound = this.Sound(song.url);
     // this.setState({ song, Sound });
     this.props.navigation.navigate('Music', {
-      musicItem:song
+      musicItem: song
     });
   }
 
@@ -126,12 +127,11 @@ export default class Home extends Component {
       <View style={styles.container} >
         <ScrollableTabView
           style={styles.topView}
-          renderTabBar={() => <FacebookTabBar/>}
+          renderTabBar={() => <FacebookTabBar style={{ paddingTop: 32, height: 77, backgroundColor: BACKGROUND_COLOR }} navigation={this.props.navigation} />}
         >
           <Container1 name='ios-person' tabLabel="ios-musical-note" />
           <Container2 name='music-square' tabLabel='ios-musical-notes' />
           <Container3 name='ios-tv' tabLabel="ios-tv" />
-
         </ScrollableTabView>
       </View>
     );
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   topView: {
-    marginTop: 22,
+    // paddingTop: 22,
   },
   welcome: {
     fontSize: 20,

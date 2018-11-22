@@ -1,0 +1,1 @@
+export const BACKGROUND_COLOR='rgba(244,37,37,1)'

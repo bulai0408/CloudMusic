@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 import { createStackNavigator } from "react-navigation";
-import { ThemeProvider } from "nachos-ui";
+import { ThemeProvider, Input } from "nachos-ui";
 
 import AppScreen from '../App';
 import LoadingScreen from '../src/pages/Loading';
@@ -9,6 +9,9 @@ import LoginScreen from '../src/pages/Login';
 import EmailLoginScreen from '../src/pages/EmailLogin';
 import HomeScreen from '../src/pages/Home';
 import MusicScreen from '../src/pages/Music';
+import SearchScreen from '../src/pages/Search';
+
+import { BACKGROUND_COLOR } from '../src/constant'
 
 const AppNavigator = createStackNavigator({
   Loading: {
@@ -44,6 +47,12 @@ const AppNavigator = createStackNavigator({
   Music: {
     screen: MusicScreen,
   },
+  Search: {
+    screen: SearchScreen,
+    navigationOptions: {
+      header: null
+    }
+  }
 });
 
 
