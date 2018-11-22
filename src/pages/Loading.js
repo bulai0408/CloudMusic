@@ -8,7 +8,7 @@ export default class Loading extends Component {
     const resetAction = StackActions.reset({
       index: 0,
       actions: [
-        NavigationActions.navigate({ routeName: 'Login' })
+        NavigationActions.navigate({ routeName: 'Home' })
       ],
     });
     this.timer = setTimeout(() => {

@@ -3,9 +3,30 @@ import { StyleSheet, Text, View, FlatList } from 'react-native';
 import axios from 'axios';
 import { Button, Input } from 'nachos-ui';
 import Sound from 'react-native-sound';
+import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
+
+import FacebookTabBar from '../components/FacebookTabBar';
 
 // Enable playback in silence mode
 Sound.setCategory('Playback');
+
+const Container1 = () => (
+  <View>
+    <Text>我是1</Text>
+  </View>
+)
+
+const Container2 = () => (
+  <View>
+    <Text>我是3</Text>
+  </View>
+)
+
+const Container3 = () => (
+  <View>
+    <Text>我是3</Text>
+  </View>
+)
 
 export default class Home extends Component {
   constructor(props) {
@@ -73,32 +94,43 @@ export default class Home extends Component {
     </View>) : undefined
 
     return (
-      <View style={styles.container}>
-        <View style={styles.topView}>
-          <Input
-            placeholder='搜索'
-            style={styles.input}
-            value={searchText}
-            onChangeText={searchText => this.setState({ searchText })}
-            onSubmitEditing={this.onSearch}
-          />
-        </View>
-        {controlMenu}
-        <FlatList
-          data={songs}
-          keyExtractor={(item) => (item.id).toString()}
-          renderItem={({ item }) => (<View style={styles.song} >
-            <View style={{ alignItems: 'flex-start' }}>
-              <Text style={{ marginBottom: 5 }}>{item.name}</Text>
-              {/* 音乐名 */}
-              <Text>{item.artists[0].name}</Text>
-              {/* 歌手名 */}
-            </View>
-            <View style={styles.button}>
-              <Button onPress={() => { this.getSource(item.id) }}>播放</Button>
-            </View>
-          </View>)}
-        />
+      // <View style={styles.container}>
+      //   <View style={styles.topView}>
+      //     <Input
+      //       placeholder='搜索'
+      //       style={styles.input}
+      //       value={searchText}
+      //       onChangeText={searchText => this.setState({ searchText })}
+      //       onSubmitEditing={this.onSearch}
+      //     />
+      //   </View>
+      //   {controlMenu}
+      //   <FlatList
+      //     data={songs}
+      //     keyExtractor={(item) => (item.id).toString()}
+      //     renderItem={({ item }) => (<View style={styles.song} >
+      //       <View style={{ alignItems: 'flex-start' }}>
+      //         <Text style={{ marginBottom: 5 }}>{item.name}</Text>
+      //         {/* 音乐名 */}
+      //         <Text>{item.artists[0].name}</Text>
+      //         {/* 歌手名 */}
+      //       </View>
+      //       <View style={styles.button}>
+      //         <Button onPress={() => { this.getSource(item.id) }}>播放</Button>
+      //       </View>
+      //     </View>)}
+      //   />
+      // </View>
+      <View style={styles.container} >
+        <ScrollableTabView
+          style={styles.topView}
+          renderTabBar={() => <FacebookTabBar/>}
+        >
+          <Container1 name='ios-person' tabLabel="ios-musical-note" />
+          <Container2 name='music-square' tabLabel='ios-musical-notes' />
+          <Container3 name='ios-tv' tabLabel="ios-tv" />
+
+        </ScrollableTabView>
       </View>
     );
   }
@@ -113,7 +145,6 @@ const styles = StyleSheet.create({
   },
   topView: {
     marginTop: 22,
-    width: '100%',
   },
   welcome: {
     fontSize: 20,
