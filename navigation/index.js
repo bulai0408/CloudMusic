@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from 'react-native';
-import { createStackNavigator, createAppContainer } from "react-navigation";
+import { createStackNavigator } from "react-navigation";
 import { ThemeProvider } from "nachos-ui";
 
 import AppScreen from '../App';
@@ -46,7 +46,6 @@ const AppNavigator = createStackNavigator({
   },
 });
 
-const App = createAppContainer(AppNavigator);
 
 export default (MyApp = () => (
   <ThemeProvider
@@ -55,6 +54,6 @@ export default (MyApp = () => (
       primaryColor: "white"
     }}
   >
-    <App />
+    <AppNavigator />
   </ThemeProvider>
 ))
