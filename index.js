@@ -6,7 +6,7 @@ import { name as appName } from './app.json';
 import axios from 'axios';
 
 
-axios.defaults.baseURL = 'http://localhost:3000/';
+axios.defaults.baseURL = 'http://cloud-music-api.cyhbulai.top/';
 axios.defaults.withCredentials = true
 
 

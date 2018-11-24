@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View, FlatList } from 'react-native';
+import { Platform, StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Input,Button } from 'nachos-ui';
+import { Input, Button } from 'nachos-ui';
 import axios from 'axios';
 import Sound from 'react-native-sound';
 
@@ -19,7 +19,6 @@ export default class Search extends Component {
     }
   }
 
-
   goBack = () => {
     this.props.navigation.goBack()
   }
@@ -27,21 +26,15 @@ export default class Search extends Component {
   onSearch = async () => {
     const { searchText } = this.state;
     const { data: { result } } = await axios.get(`search?keywords=${searchText}`);
-    console.log(result);
     const { songs } = result;
+    console.log(result);
     this.setState({ songs })
-
   }
 
-  getSource = async (id) => {
-    const { data: { data } } = await axios.get(`song/url?id=${id}`);
-    const song = data[0];
-    console.log(song);
-    const Sound = this.Sound(song.url);
-    // this.setState({ song, Sound });
-    // this.props.navigation.navigate('Music', {
-    //   musicItem: song
-    // });
+  getSource = async (detail) => {
+    this.props.navigation.navigate('Listen', {
+      detail
+    });
   }
 
   //播放器
@@ -91,17 +84,24 @@ export default class Search extends Component {
         <FlatList
           data={songs}
           keyExtractor={(item) => (item.id).toString()}
-          renderItem={({ item }) => (<View style={styles.song} >
-            <View style={{ alignItems: 'flex-start' }}>
-              <Text style={{ marginBottom: 5 }}>{item.name}</Text>
-              {/* 音乐名 */}
-              <Text>{item.artists[0].name}</Text>
-              {/* 歌手名 */}
-            </View>
-            <View style={styles.button}>
-              <Button onPress={() => { this.getSource(item.id) }}>播放</Button>
-            </View>
-          </View>)}
+          renderItem={({ item }) => (
+            <TouchableOpacity activeOpacity={0} onPress={() => { this.getSource(item) }}>
+              <View style={styles.song} >
+                <View style={{ alignItems: 'flex-start' }}>
+                  <Text style={{ marginBottom: 5, fontSize: 15 }}>{item.name}</Text>
+                  {/* 音乐名 */}
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 11, color: '#87CEFA' }}>{item.artists[0].name}</Text>
+                    {/* 歌手名 */}
+                    <View style={{ backgroundColor: 'black', width: 4, height: 1, marginLeft: 3, marginRight: 3 }} />
+                    <Text style={{ fontSize: 11, color: '#8B8989' }}>{item.album.name}</Text>
+                    {/* 专辑名 */}
+                  </View>
+                  {/* {(Array.isArray(item.alias) && item.alias.length > 0) && <Text style={{ marginTop: 5, fontSize: 13, color: '#8B8989' }}>{item.alias[0]}</Text>} */}
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
         />
       </View>
     );
@@ -111,15 +111,18 @@ export default class Search extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white'
   },
   button: {
     height: 50,
     marginTop: 10
   },
   song: {
-    padding: 5,
+    padding: 7,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderColor: '#F8F8F8'
   }
 });

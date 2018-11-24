@@ -10,8 +10,8 @@ import EmailLoginScreen from '../src/pages/EmailLogin';
 import HomeScreen from '../src/pages/Home';
 import MusicScreen from '../src/pages/Music';
 import SearchScreen from '../src/pages/Search';
+import ListenPage from '../src/pages/ListenPage';
 
-import { BACKGROUND_COLOR } from '../src/constant'
 
 const AppNavigator = createStackNavigator({
   Loading: {
@@ -51,6 +51,11 @@ const AppNavigator = createStackNavigator({
     screen: SearchScreen,
     navigationOptions: {
       header: null
+    }
+  },
+  Listen: {
+    screen: ListenPage,
+    navigationOptions: {
     }
   }
 });
