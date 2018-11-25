@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Button, Input } from 'nachos-ui';
 import Sound from 'react-native-sound';
 import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
+import { connect } from 'react-redux';
 
 import FacebookTabBar from '../components/FacebookTabBar';
 import { BACKGROUND_COLOR } from '../constant';
@@ -19,7 +20,7 @@ const Container1 = () => (
 
 const Container2 = () => (
   <View>
-    <Text>我是3</Text>
+    <Text>我是2</Text>
   </View>
 )
 
@@ -29,7 +30,7 @@ const Container3 = () => (
   </View>
 )
 
-export default class Home extends Component {
+class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -85,49 +86,12 @@ export default class Home extends Component {
   }
 
   render() {
-    const { searchText, songs, isStart } = this.state;
-    const data = this.props.navigation.getParam('data', 'Peter');
-    const controlMenu = isStart ? (<View style={{ marginTop: 10 }}>
-      <View style={styles.button}>
-        <Button onPress={this.onPause}>暂停</Button>
-      </View>
-      <View style={styles.button}>
-        <Button onPress={this.onGo}>继续</Button>
-      </View>
-    </View>) : undefined
-
     return (
-      // <View style={styles.container}>
-      //   <View style={styles.topView}>
-      //     <Input
-      //       placeholder='搜索'
-      //       style={styles.input}
-      //       value={searchText}
-      //       onChangeText={searchText => this.setState({ searchText })}
-      //       onSubmitEditing={this.onSearch}
-      //     />
-      //   </View>
-      //   {controlMenu}
-      //   <FlatList
-      //     data={songs}
-      //     keyExtractor={(item) => (item.id).toString()}
-      //     renderItem={({ item }) => (<View style={styles.song} >
-      //       <View style={{ alignItems: 'flex-start' }}>
-      //         <Text style={{ marginBottom: 5 }}>{item.name}</Text>
-      //         {/* 音乐名 */}
-      //         <Text>{item.artists[0].name}</Text>
-      //         {/* 歌手名 */}
-      //       </View>
-      //       <View style={styles.button}>
-      //         <Button onPress={() => { this.getSource(item.id) }}>播放</Button>
-      //       </View>
-      //     </View>)}
-      //   />
-      // </View>
       <View style={styles.container} >
         <ScrollableTabView
           style={styles.topView}
           renderTabBar={() => <FacebookTabBar style={{ paddingTop: 32, height: 77, backgroundColor: BACKGROUND_COLOR }} navigation={this.props.navigation} />}
+          initialPage={1}
         >
           <Container1 name='ios-person' tabLabel="ios-musical-note" />
           <Container2 name='music-square' tabLabel='ios-musical-notes' />
@@ -181,5 +145,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
   }
-
 });
+
+export default connect(state => ({ user: state.user }))(Home);

@@ -36,6 +36,7 @@ class FacebookTabBar extends React.Component {
         const green = 89 + (204 - 89) * progress;
         const blue = 152 + (204 - 152) * progress;
         return `rgb(${red}, ${green}, ${blue})`;
+        // return 'white'
     }
 
     onSearch = () => {
@@ -54,7 +55,7 @@ class FacebookTabBar extends React.Component {
                     <Icon
                         name={tab}
                         size={30}
-                        color={this.props.activeTab === i ? 'rgb(59,89,152)' : 'rgb(204,204,204)'}
+                        color={this.props.activeTab === i ? 'white' : 'rgb(204,204,204)'}
                         ref={(icon) => { this.icons[i] = icon; }}
                     />
                 </TouchableOpacity>;

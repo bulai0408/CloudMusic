@@ -3,36 +3,36 @@ import { Platform, StyleSheet, Text, View, TextInput, TouchableOpacity } from 'r
 import axios from 'axios';
 import { Button, Input, H2 } from 'nachos-ui';
 import { StackActions, NavigationActions } from 'react-navigation';
+import { connect } from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-export default class EmailLogin extends Component {
+import { doEmailLogin } from '../redux/action/user';
+class EmailLogin extends Component {
   constructor(props) {
     super(props);
     this.state = {
       password: '',
-      email: ''
+      email: '',
+      emailStatus: 'normal',
+      passwordStatus: 'normal',
     }
   }
 
   //登录
   onPress = async () => {
     const { email, password } = this.state;
-    try {
-      const { data } = await axios.get('login', {
-        params: {
-          email,
-          password
-        }
-      });
-      const resetToHome = StackActions.reset({
-        index: 0,
-        actions: [
-          NavigationActions.navigate({ routeName: 'Home' })
-        ],
-      });
-      this.props.navigation.dispatch(resetToHome);
-    } catch (error) {
-      console.dir(error.respoonse.data.msg);
+    if (!email) {
+      this.setState({ emailStatus: 'error' });
+      return;
     }
+    this.setState({ emailStatus: 'normal' });
+    if (!password) {
+      this.setState({ passwordStatus: 'error' });
+      return;
+    }
+    this.setState({ passwordStatus: 'normal' });
+    const { doEmailLogin, navigation } = this.props;
+    doEmailLogin({ email, password }, navigation);
   }
 
   //切换至手机号登录
@@ -41,16 +41,23 @@ export default class EmailLogin extends Component {
   }
 
   render() {
-    const { phone, password } = this.state;
+    const { email, password, emailStatus, passwordStatus } = this.state;
+    const { user: { isFetching } } = this.props;
     return (
       <View style={styles.container}>
+        <Spinner
+          visible={isFetching}
+          textContent={'拼命加载中...'}
+          textStyle={{ color: '#FFF', fontSize: 15, marginBottom: 60 }}
+        />
         <H2 style={styles.welcome}>邮箱登录</H2>
         <View style={styles.inputArea}>
           <Input
             placeholder='邮箱账号'
             style={styles.input}
-            value={phone}
-            onChangeText={phone => this.setState({ phone })}
+            value={email}
+            status={passwordStatus}
+            onChangeText={email => this.setState({ email })}
           />
         </View>
         <View style={styles.inputArea}>
@@ -58,6 +65,7 @@ export default class EmailLogin extends Component {
             placeholder='密码'
             style={styles.input}
             value={password}
+            status={passwordStatus}
             secureTextEntry={true}
             onChangeText={password => this.setState({ password })}
           />
@@ -114,3 +122,5 @@ const styles = StyleSheet.create({
   }
 
 });
+
+export default connect(state => ({ user: state.user }), { doEmailLogin })(EmailLogin)

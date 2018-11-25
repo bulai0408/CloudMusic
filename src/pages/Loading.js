@@ -9,6 +9,7 @@ export default class Loading extends Component {
       index: 0,
       actions: [
         NavigationActions.navigate({ routeName: 'Home' })
+        // NavigationActions.navigate({ routeName: 'Login' })
       ],
     });
     this.timer = setTimeout(() => {
