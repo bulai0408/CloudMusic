@@ -36,7 +36,6 @@ class FacebookTabBar extends React.Component {
         const green = 89 + (204 - 89) * progress;
         const blue = 152 + (204 - 152) * progress;
         return `rgb(${red}, ${green}, ${blue})`;
-        // return 'white'
     }
 
     onSearch = () => {

@@ -7,6 +7,9 @@ import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-vi
 import { connect } from 'react-redux';
 
 import FacebookTabBar from '../components/FacebookTabBar';
+import SongList from './SongList';
+import Popular from './Popular';
+import Mv from './Mv';
 import { BACKGROUND_COLOR } from '../constant';
 
 // Enable playback in silence mode
@@ -91,11 +94,11 @@ class Home extends Component {
         <ScrollableTabView
           style={styles.topView}
           renderTabBar={() => <FacebookTabBar style={{ paddingTop: 32, height: 77, backgroundColor: BACKGROUND_COLOR }} navigation={this.props.navigation} />}
-          initialPage={1}
+          initialPage={0}
         >
-          <Container1 name='ios-person' tabLabel="ios-musical-note" />
-          <Container2 name='music-square' tabLabel='ios-musical-notes' />
-          <Container3 name='ios-tv' tabLabel="ios-tv" />
+          <SongList name='ios-person' tabLabel="ios-musical-note" />
+          <Popular name='music-square' tabLabel='ios-musical-notes' />
+          <Mv name='ios-tv' tabLabel="ios-tv" />
         </ScrollableTabView>
       </View>
     );
