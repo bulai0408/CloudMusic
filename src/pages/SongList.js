@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image, ScrollView } from 'react-native';
 import axios from 'axios';
 import { Button, Input, H2 } from 'nachos-ui';
 import { StackActions, NavigationActions } from 'react-navigation';
@@ -33,7 +33,9 @@ class SongList extends Component {
         content: '特别的聆听模式'
       }],
       playlist: [],
-      userId: 0
+      userId: 0,
+      createHide: false,
+      subscribeHide: false,
     }
   }
 
@@ -53,6 +55,17 @@ class SongList extends Component {
     }
   }
 
+  changeCreateHide = () => {
+    this.setState({
+      createHide: !this.state.createHide
+    })
+  }
+
+  changeSubscribeHide = () => {
+    this.setState({
+      subscribeHide: !this.state.subscribeHide
+    })
+  }
 
   render() {
     const { topMenu, playlist, userId } = this.state;
@@ -67,43 +80,61 @@ class SongList extends Component {
     const createList = playlist.filter(item => item.creator.userId === userId)
     const subscribeList = playlist.filter(item => item.creator.userId !== userId)
 
+    const { createHide, subscribeHide } = this.state;
+
     return (
       <View style={styles.container}>
-        {menuRender}
-        <Text>创建的歌单</Text>
-        <FlatList
-          data={createList}
-          style={{ paddingLeft: 5, paddingRight: 5 }}
-          keyExtractor={(item) => (item.id).toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity activeOpacity={0}>
-              <View key={item.id} style={{ flexDirection: 'row',paddingTop:3,paddingBottom:3 }}>
-                <Image style={{ width: 60, height: 60, borderRadius: 4,marginRight:8 }} source={{ uri: item.coverImgUrl }} />
-                <View style={{ justifyContent: 'center' }}>
-                  <Text style={{ marginBottom: 5 }}>{item.name}</Text>
-                  <Text>{item.trackCount}首</Text>
-                </View>
+        <ScrollView style={{ flex: 1 }}>
+          {menuRender}
+          <TouchableOpacity activeOpacity={1} onPress={this.changeCreateHide}>
+            <View style={{ padding: 8, backgroundColor: '#DCDCDC', flexDirection: 'row', alignItems: 'center' }}>
+              <View style={createHide ? '' : styles.create}>
+                <View style={styles.icon} />
               </View>
-            </TouchableOpacity>
-          )}
-        />
-        <Text>收藏的歌单</Text>
-        <FlatList
-          data={subscribeList}
-          style={{ paddingLeft: 5, paddingRight: 5 }}
-          keyExtractor={(item) => (item.id).toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity activeOpacity={0}>
-              <View key={item.id} style={{ flexDirection: 'row',paddingTop:3,paddingBottom:3 }}>
-                <Image style={{ width: 60, height: 60, borderRadius: 4,marginRight:8 }} source={{ uri: item.coverImgUrl }} />
-                <View style={{ justifyContent: 'center' }}>
-                  <Text style={{ marginBottom: 5 }}>{item.name}</Text>
-                  <Text>{item.trackCount}首 by {item.creator.nickname}</Text>
+              <Text style={{ marginLeft: 10 }} >创建的歌单</Text>
+            </View>
+          </TouchableOpacity>
+          <FlatList
+            data={createList}
+            style={[{ paddingLeft: 5, paddingRight: 5 }, createHide ? styles.createlist : '']}
+            keyExtractor={(item) => (item.id).toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity activeOpacity={0}>
+                <View key={item.id} style={{ flexDirection: 'row', paddingTop: 3, paddingBottom: 3 }}>
+                  <Image style={{ width: 50, height: 50, borderRadius: 4, marginRight: 8 }} source={{ uri: item.coverImgUrl }} />
+                  <View style={{ justifyContent: 'center' }}>
+                    <Text style={{ marginBottom: 5 }}>{item.name}</Text>
+                    <Text>{item.trackCount}首</Text>
+                  </View>
                 </View>
+              </TouchableOpacity>
+            )}
+          />
+          <TouchableOpacity activeOpacity={1} onPress={this.changeSubscribeHide}>
+            <View style={{ padding: 8, backgroundColor: '#DCDCDC', flexDirection: 'row', alignItems: 'center' }}>
+              <View style={subscribeHide ? '' : styles.subscribe}>
+                <View style={styles.icon} />
               </View>
-            </TouchableOpacity>
-          )}
-        />
+              <Text style={{ marginLeft: 10 }} >收藏的歌单</Text>
+            </View>
+          </TouchableOpacity>
+          <FlatList
+            data={subscribeList}
+            style={[{ paddingLeft: 5, paddingRight: 5 }, subscribeHide ? styles.subscribelist : '']}
+            keyExtractor={(item) => (item.id).toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity activeOpacity={0}>
+                <View key={item.id} style={{ flexDirection: 'row', paddingTop: 3, paddingBottom: 3 }}>
+                  <Image style={{ width: 50, height: 50, borderRadius: 4, marginRight: 8 }} source={{ uri: item.coverImgUrl }} />
+                  <View style={{ justifyContent: 'center' }}>
+                    <Text style={{ marginBottom: 5 }}>{item.name}</Text>
+                    <Text>{item.trackCount}首 by {item.creator.nickname}</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+        </ScrollView>
       </View>
     );
   }
@@ -115,6 +146,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     // alignItems: 'center',
     backgroundColor: '#F5FCFF',
+
   },
   welcome: {
     fontSize: 20,
@@ -147,8 +179,28 @@ const styles = StyleSheet.create({
   },
   input: {
     borderRadius: 4
+  },
+  create: {
+    transform: [{ rotate: '90deg' }]
+  },
+  subscribe: {
+    transform: [{ rotate: '90deg' }]
+  },
+  createlist: {
+    height: 0
+  },
+  subscribelist: {
+    height: 0
+  },
+  icon: {
+    width: 8,
+    height: 8,
+    borderLeftWidth: 1,
+    borderBottomWidth: 1,
+    borderLeftColor: '#999',
+    borderBottomColor: '#999',
+    transform: [{ rotateZ: '-135deg' }],
   }
-
 });
 
 export default connect(state => ({ user: state.user }))(SongList)
