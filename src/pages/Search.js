@@ -5,11 +5,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Input, Button } from 'nachos-ui';
 import axios from 'axios';
 import Sound from 'react-native-sound';
+import { connect } from 'react-redux';
 
 
 import { BACKGROUND_COLOR } from '../constant'
+import { getSongUrl } from '../redux/action/song';
 
-export default class Search extends Component {
+class Search extends Component {
 
   constructor(props) {
     super(props);
@@ -126,3 +128,5 @@ const styles = StyleSheet.create({
     borderColor: '#F8F8F8'
   }
 });
+
+export default connect(state => ({ user: state.user }))(Search)

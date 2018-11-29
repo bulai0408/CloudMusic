@@ -1,34 +1,30 @@
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Animated } from 'react-native';
 import axios from 'axios';
 import { Button, Input, H2 } from 'nachos-ui';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Sound from 'react-native-sound';
+import { connect } from 'react-redux';
 
-export default class ListenPage extends Component {
+import { getSongUrl, getSongDetail } from '../redux/action/song';
+
+class ListenPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       status: 0, //0暂停，1播放
       musicUrl: '',
-      imgUrl: ''
+      imgUrl: '',
+      animatedValue: new Animated.Value(0)
     }
-    // this.Control = undefined;
-    // const { navigation } = this.props;
-    // const song = navigation.getParam('song');
-    // this.Sound = new Sound(song.url, null, (e) => {
-    //   if (e) {
-    //     return;
-    //   }
-    //   console.log(this.Sound);
-    //   this.Sound.play(() => this.Sound.release());
-    // });
-    // console.log(this.Sound);
   }
 
   componentDidMount = async () => {
     const { navigation } = this.props;
     const detail = navigation.getParam('detail');
+    // const { getSongUrl, getSongDetail } = this.props;
+    // getSongUrl(detail.id)
+    // getSongDetail(detail.id)
     Promise.all([
       axios.get(`song/url?id=${detail.id}`),
       axios.get(`song/detail?ids=${detail.id}`)
@@ -36,7 +32,6 @@ export default class ListenPage extends Component {
       .then(res => {
         const musicUrl = res[0].data.data[0].url;
         const imgUrl = res[1].data.songs[0].al.picUrl;
-        console.log(res);
         if (!musicUrl) {
           navigation.goBack();
           return;
@@ -44,12 +39,10 @@ export default class ListenPage extends Component {
         this.Control = this.Sound(musicUrl);
         this.setState({
           musicUrl,
-          imgUrl
+          imgUrl,
+          status: 1
         })
       });
-    // const { data: { data } } = await axios.get(`song/url?id=${detail.id}`);
-    // const song = data[0];
-    // console.log(song);
   }
 
   //播放器
@@ -97,9 +90,31 @@ export default class ListenPage extends Component {
 
   render() {
     const { imgUrl } = this.state;
+    // let Picture;
+    // if (this.props.song.song && this.props.song.song.url) {
+    //   this.Control = this.Sound(this.props.song.song.url);
+    // }
+    // if (this.props.song.song && this.props.song.song.detail) {
+    //   Picture = <Image style={{ width: 200, height: 200 }} source={{ uri: this.props.song.song.detail.al.picUrl }} />
+    // }
+  //   let interpolatedAnimation = this.state.animatedValue.interpolate({
+  //     inputRange: [0, 100],
+  //     outputRange: ['0deg', '360deg']
+  // });
+  
     const Picture = imgUrl ? (
-      <Image style={{ width: 200, height: 200 }} source={{ uri: imgUrl }} />)
+      // <Image style={{ width: 200, height: 200, borderRadius: 100 }} source={{ uri: imgUrl }} />
+      <Animated.Image style={[{ width: 200, height: 200, borderRadius: 100 },{transform: [
+        {rotate: interpolatedAnimation},
+        {translateY: this.state.animatedValue}
+    ]}]} source={{ uri: imgUrl }}/>
+      )
       : undefined
+
+    //   if(imgUrl){ Animated.timing(this.state.animatedValue, {
+    //     toValue:100,
+    //     duration: 3000
+    // }).start();}
 
     return (
       <View style={styles.container}>
@@ -153,3 +168,5 @@ const styles = StyleSheet.create({
   }
 
 });
+
+export default connect(state => ({ song: state.song }), { getSongUrl, getSongDetail })(ListenPage);
