@@ -29,6 +29,7 @@ const Root = () => (
 );
 
 axios.defaults.baseURL = 'http://cloud-music-api.cyhbulai.top/';
+// axios.defaults.baseURL = 'http://localhost:3000/';
 axios.defaults.withCredentials = true
 
 AppRegistry.registerComponent(appName, () => Root);

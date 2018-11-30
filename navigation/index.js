@@ -10,7 +10,9 @@ import EmailLoginScreen from '../src/pages/EmailLogin';
 import HomeScreen from '../src/pages/Home';
 import MusicScreen from '../src/pages/Music';
 import SearchScreen from '../src/pages/Search';
-import ListenPage from '../src/pages/ListenPage';
+import ListenPageScreen from '../src/pages/ListenPage';
+import SongListScreen from '../src/pages/SongList';
+import SongListDetailScreen from '../src/pages/SongListDetail';
 
 
 const AppNavigator = createStackNavigator({
@@ -54,10 +56,21 @@ const AppNavigator = createStackNavigator({
     }
   },
   Listen: {
-    screen: ListenPage,
+    screen: ListenPageScreen,
+    navigationOptions: {
+    }
+  },
+  SongList: {
+    screen: SongListScreen,
+    navigationOptions: {
+    }
+  },
+  SongListDetail: {
+    screen: SongListDetailScreen,
     navigationOptions: {
     }
   }
+
 });
 
 

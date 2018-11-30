@@ -67,6 +67,14 @@ class SongList extends Component {
     })
   }
 
+  /**跳转到歌单详情界面，携带歌单id */
+  toSongListDetail = (item) => {
+    console.log(this.props);
+    this.props.navigation.navigate('SongListDetail', {
+      id: item.id
+    })
+  }
+
   render() {
     const { topMenu, playlist, userId } = this.state;
     const menuRender = topMenu.map((item, index) => (
@@ -99,7 +107,7 @@ class SongList extends Component {
             style={[{ paddingLeft: 5, paddingRight: 5 }, createHide ? styles.createlist : '']}
             keyExtractor={(item) => (item.id).toString()}
             renderItem={({ item }) => (
-              <TouchableOpacity activeOpacity={0}>
+              <TouchableOpacity activeOpacity={0} onPress={() => { this.toSongListDetail(item) }}>
                 <View key={item.id} style={{ flexDirection: 'row', paddingTop: 3, paddingBottom: 3 }}>
                   <Image style={{ width: 50, height: 50, borderRadius: 4, marginRight: 8 }} source={{ uri: item.coverImgUrl }} />
                   <View style={{ justifyContent: 'center' }}>
@@ -123,7 +131,7 @@ class SongList extends Component {
             style={[{ paddingLeft: 5, paddingRight: 5 }, subscribeHide ? styles.subscribelist : '']}
             keyExtractor={(item) => (item.id).toString()}
             renderItem={({ item }) => (
-              <TouchableOpacity activeOpacity={0}>
+              <TouchableOpacity activeOpacity={0} onPress={() => { this.toSongListDetail(item) }}>
                 <View key={item.id} style={{ flexDirection: 'row', paddingTop: 3, paddingBottom: 3 }}>
                   <Image style={{ width: 50, height: 50, borderRadius: 4, marginRight: 8 }} source={{ uri: item.coverImgUrl }} />
                   <View style={{ justifyContent: 'center' }}>

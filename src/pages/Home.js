@@ -96,9 +96,9 @@ class Home extends Component {
           renderTabBar={() => <FacebookTabBar style={{ paddingTop: 32, height: 77, backgroundColor: BACKGROUND_COLOR }} navigation={this.props.navigation} />}
           initialPage={0}
         >
-          <SongList name='ios-person' tabLabel="ios-musical-note" />
-          <Popular name='music-square' tabLabel='ios-musical-notes' />
-          <Mv name='ios-tv' tabLabel="ios-tv" />
+          <SongList {...this.props} name='ios-person' tabLabel="ios-musical-note" />
+          <Popular {...this.props} name='music-square' tabLabel='ios-musical-notes' />
+          <Mv {...this.props} name='ios-tv' tabLabel="ios-tv" />
         </ScrollableTabView>
       </View>
     );
