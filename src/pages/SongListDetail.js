@@ -6,8 +6,9 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { bindActionCreators } from 'redux';
 
-import { doPhoneLogin } from '../redux/action/user';
+import { getSongId } from '../redux/action/song';
 
 class SongListDetail extends Component {
   constructor(props) {
@@ -23,41 +24,59 @@ class SongListDetail extends Component {
     const { navigation } = this.props;
     const id = navigation.getParam('id');
     const { data: { playlist: { tracks } } } = await axios.get(`/playlist/detail?id=${id}`);
-    const list = [];
-    const hasSongCanUse = tracks.map(item => {
-      return Promise.all([
-        axios.get(`check/music?id=${item.id}`),
-        axios.get(`song/url?id=${item.id}`)
-      ])
-        .then(res => {
-          const thisKeys = {};
-          res.forEach(i => {
-            const { data } = i;
-            if (data.message === 'ok' || data.message === '亲爱的,暂无版权') {
-              thisKeys.permission = data.success;
-            } else if (data.data[0].url) {
-              thisKeys.url = data.data[0].url
-            }
-          })
-          list.push({ ...item, ...thisKeys })
-        })
+    const newTracks = tracks.map(item => {
+      return {
+        album: item.al, //专辑
+        singer: item.ar[0], //歌手信息
+        name: item.name, //歌单名
+        id: item.id, //歌曲id
+      }
     });
-    Promise.all(hasSongCanUse)//判断音乐是否可用
-      .then(res => {
-        const showingSource = list.map(item => {
-          return {
-            album: item.al, //专辑
-            singer: item.ar[0], //歌手信息
-            name: item.name, //歌单名
-            id: item.id, //歌单id
-            permission: item.permission //是否可用
-          }
-        });
-        this.setState({
-          songListSource: showingSource,
-          isFetching: false
-        })
-      })
+    this.setState({
+      songListSource: newTracks,
+      isFetching: false
+    })
+    // const list = [];
+    // const hasSongCanUse = tracks.map(item => {
+    //   return Promise.all([
+    //     axios.get(`check/music?id=${item.id}`),
+    //     axios.get(`song/url?id=${item.id}`)
+    //   ])
+    //     .then(res => {
+    //       const thisKeys = {};
+    //       res.forEach(i => {
+    //         const { data } = i;
+    //         if (data.message === 'ok' || data.message === '亲爱的,暂无版权') {
+    //           thisKeys.permission = data.success;
+    //         } else if (data.data[0].url) {
+    //           thisKeys.url = data.data[0].url
+    //         }
+    //       })
+    //       list.push({ ...item, ...thisKeys })
+    //     })
+    // });
+    // Promise.all(hasSongCanUse)//判断音乐是否可用
+    //   .then(res => {
+    //     const showingSource = list.map(item => {
+    //       return {
+    //         album: item.al, //专辑
+    //         singer: item.ar[0], //歌手信息
+    //         name: item.name, //歌单名
+    //         id: item.id, //歌单id
+    //         permission: item.permission //是否可用
+    //       }
+    //     });
+    //     this.setState({
+    //       songListSource: showingSource,
+    //       isFetching: false
+    //     })
+    //   })
+  }
+
+  /**跳转到听歌界面 入参歌曲详情 跳转传参歌曲 */
+  toListenPage = async (detail) => {
+    const { getSongId, navigation } = this.props;
+    getSongId(detail.id, navigation) //将当前播放音乐的id存放在redux
   }
 
   render() {
@@ -72,16 +91,30 @@ class SongListDetail extends Component {
         renderItem={i => {
           const { item } = i;
           return (
-            <View style={{ flexDirection: 'row' }}>
-              <Text>{i.index + 1}</Text>
-              <View>
-                <Text>{item.name}</Text>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text>{item.singer.name}</Text>
-                  <Text>{item.album.name}</Text>
+            <TouchableOpacity activeOpacity={1} onPress={() => this.toListenPage(item)}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                <Text style={{ padding: 15 }}>{i.index + 1}</Text>
+                <View style={{ borderBottomColor: '#F2F2F2', borderBottomWidth: 1, padding: 8, flex: 1 }}>
+                  <Text
+                    style={{ marginBottom: 5 }}
+                    numberOfLines={1}
+                    ellipsizeMode={'tail'}
+                  >{item.name}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text
+                      numberOfLines={1}
+                      ellipsizeMode={'tail'}
+                    >{item.singer.name}</Text>
+                    <View style={{ backgroundColor: 'black', width: 4, height: 1, marginLeft: 3, marginRight: 3 }} />
+                    <Text
+                      numberOfLines={1}
+                      ellipsizeMode={'tail'}
+                      style={{ flex: 1 }}
+                    >{item.album.name}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           )
         }}
       />
@@ -160,7 +193,7 @@ const styles = StyleSheet.create({
     borderLeftColor: '#999',
     borderBottomColor: '#999',
     transform: [{ rotateZ: '-135deg' }],
-  }
+  },
 });
 
-export default connect()(SongListDetail)
+export default connect(state => ({ id: state.id }), { getSongId })(SongListDetail)

@@ -89,14 +89,23 @@ class Search extends Component {
           renderItem={({ item }) => (
             <TouchableOpacity activeOpacity={0} onPress={() => { this.getSource(item) }}>
               <View style={styles.song} >
-                <View style={{ alignItems: 'flex-start' }}>
-                  <Text style={{ marginBottom: 5, fontSize: 15 }}>{item.name}</Text>
+                <View style={{ alignItems: 'flex-start',flex:1 }}>
+                  <Text
+                    numberOfLines={1}
+                    ellipsizeMode={'tail'}
+                    style={{ marginBottom: 5, fontSize: 15 }}>{item.name}</Text>
                   {/* 音乐名 */}
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 11, color: '#87CEFA' }}>{item.artists[0].name}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center',flex:1 }}>
+                    <Text
+                      numberOfLines={1}
+                      ellipsizeMode={'tail'}
+                      style={{ fontSize: 11, color: '#87CEFA' }}>{item.artists[0].name}</Text>
                     {/* 歌手名 */}
                     <View style={{ backgroundColor: 'black', width: 4, height: 1, marginLeft: 3, marginRight: 3 }} />
-                    <Text style={{ fontSize: 11, color: '#8B8989' }}>{item.album.name}</Text>
+                    <Text
+                      numberOfLines={1}
+                      ellipsizeMode={'tail'}
+                      style={{ fontSize: 11, color: '#8B8989',flex:1 }}>{item.album.name}</Text>
                     {/* 专辑名 */}
                   </View>
                   {/* {(Array.isArray(item.alias) && item.alias.length > 0) && <Text style={{ marginTop: 5, fontSize: 13, color: '#8B8989' }}>{item.alias[0]}</Text>} */}
@@ -125,7 +134,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderColor: '#F8F8F8'
+    borderColor: '#F2F2F2'
   }
 });
 

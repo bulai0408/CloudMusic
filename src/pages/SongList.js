@@ -49,9 +49,7 @@ class SongList extends Component {
       const id = 116368939;
       const { data: { playlist } } = await axios.get(`user/playlist?uid=${id}`);
       this.setState({ playlist, userId: id })
-      console.log(playlist);
     } catch (e) {
-      console.log(e.message);
     }
   }
 
@@ -69,7 +67,6 @@ class SongList extends Component {
 
   /**跳转到歌单详情界面，携带歌单id */
   toSongListDetail = (item) => {
-    console.log(this.props);
     this.props.navigation.navigate('SongListDetail', {
       id: item.id
     })

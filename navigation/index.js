@@ -15,7 +15,7 @@ import SongListScreen from '../src/pages/SongList';
 import SongListDetailScreen from '../src/pages/SongListDetail';
 
 
-const AppNavigator = createStackNavigator({
+export const AppNavigator = createStackNavigator({
   Loading: {
     screen: LoadingScreen,
     navigationOptions: {

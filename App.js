@@ -13,7 +13,6 @@ export default class App extends Component {
 
   //登录
   onPress = () => {
-    console.log(this.state);
   }
 
   render() {

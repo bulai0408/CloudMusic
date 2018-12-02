@@ -1,20 +1,14 @@
-const getSongUrl = (id, navigation) => {
+import { GET_CONTROL_REQUEST } from '../constant';
+import { GET_SONG_ID_REQUEST } from '../constant';
+
+const getSongId = (id, navigation) => {
   return {
-    type: 'GET_SONG_URL',
+    type: GET_SONG_ID_REQUEST,
     id,
     navigation
   }
 }
 
-const getSongDetail = (ids, navigation) => {
-  return {
-    type: 'GET_SONG_DETAIL',
-    ids,
-    navigation
-  }
-}
-
 export {
-  getSongUrl,
-  getSongDetail  
+  getSongId,
 }

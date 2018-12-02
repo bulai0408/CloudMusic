@@ -1,35 +1,22 @@
-import { call, takeEvery, put } from "redux-saga/effects";
-import axios from 'axios';
-import { StackActions, NavigationActions } from 'react-navigation';
+import { takeEvery, put } from "redux-saga/effects";
+import { NavigationActions } from 'react-navigation';
 
 import toast from '../../util';
+import { GET_SONG_ID_REQUEST, GET_SONG_ID_SUCCEED, GET_SONG_ID_FAILED } from '../constant';
 
-function* getSongUrl({ id }) {
+function* getSongId({ id, navigation }) {
     try {
-        const { data: { data } } = yield call(axios.get, `song/url?id=${id}`);
-        yield put({ type: 'GET_SONG_URL_SUCCEED', url: data[0].url });
-        return data[0].url
+        yield put({ type: GET_SONG_ID_SUCCEED, id });
+        yield navigation.dispatch(NavigationActions.navigate({ routeName: 'Listen' }));
     } catch (e) {
-        yield put({ type: 'GET_SONG_URL_FAILED', error: e.message });
+        yield put({ type: GET_SONG_ID_FAILED, error: e.message });
         toast('服务器开小差了...', 'TOP');
     }
 }
 
-function* getSongDetail({ ids }) {
-    try {
-        const { data: { songs } } = yield call(axios.get, `song/detail?ids=${ids}`);
-        yield put({ type: 'GET_SONG_DETAIL_SUCCEED', detail: songs[0] });
-    } catch (e) {
-        yield put({ type: 'GET_SONG_DETAIL_FAILED', error: e.message });
-        toast('服务器开小差了...', 'TOP');
-    }
+export function* watchGetUrl() {
+    yield takeEvery(GET_SONG_ID_REQUEST, getSongId);
 }
 
-export function* watchGetSongUrl() {
-    yield takeEvery('GET_SONG_URL', getSongUrl);
-}
 
-export function* watchGetSongDetail() {
-    yield takeEvery('GET_SONG_DETAIL', getSongDetail);
-}
 
