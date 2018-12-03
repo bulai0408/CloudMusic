@@ -6,7 +6,6 @@ const initalState = {
   error: null
 }
 const control = (state = initalState, action = {}) => {
-  console.log(state,action);
   switch (action.type) {
     case GET_CONTROL_REQUEST:
       return {

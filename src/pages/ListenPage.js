@@ -7,7 +7,6 @@ import Sound from 'react-native-sound';
 import { connect } from 'react-redux';
 
 import { getControl } from '../redux/action/control';
-import { getSongId } from '../redux/action/song';
 
 class ListenPage extends Component {
   constructor(props) {
@@ -19,12 +18,19 @@ class ListenPage extends Component {
     }
   }
 
-  componentDidMount = () => {
-    this.startSong();
+  componentDidMount = async () => {
+    await this.initialStop();
+    await this.startSong();
+  }
+
+  //初始化时停止在播音乐
+  initialStop = () => {
+    if (!this.onStop()) return;
+    this.onStop();
   }
 
   startSong = async () => {
-    const { navigation, song: { id } } = this.props;
+    const { navigation, song: { id }, getControl } = this.props;
     Promise.all([
       axios.get(`song/url?id=${id}`),
       axios.get(`song/detail?ids=${id}`)
@@ -37,6 +43,7 @@ class ListenPage extends Component {
           return;
         }
         this.Control = this.Sound(musicUrl);
+        getControl(this.Control, navigation); //同步控制器到redux
         this.setState({
           musicUrl,
           imgUrl,
@@ -59,9 +66,8 @@ class ListenPage extends Component {
   //暂停或播放
   onControl = () => {
     const { status } = this.state;
-    const { navigation } = this.props;
-    getSongId(666, navigation);
-    console.log(getControl);
+    const { control } = this.props;
+    console.log(control);
     const statusArray = [0, 1];
     status === statusArray[0] && this.onGo()
     status === statusArray[1] && this.onPause();
@@ -69,20 +75,27 @@ class ListenPage extends Component {
 
   //暂停播放
   onPause = () => {
-    this.Control.pause();
+    const { control: { main } } = this.props;
+    if (!main) return false;
+    main.pause();
     this.setState({ status: 0 })
   }
 
   //继续播放
   onGo = () => {
-    this.Control.play();
+    const { control: { main } } = this.props;
+    if (!main) return false;
+    main.play();
     this.setState({ status: 1 })
   }
 
   //结束播放
   onStop = () => {
-    this.Control.stop();
+    const { control: { main } } = this.props;
+    if (!main) return false;
+    main.stop();
     this.setState({ status: 0 })
+    return true;
   }
 
   componentWillUnmount = () => {
@@ -103,6 +116,7 @@ class ListenPage extends Component {
         {Picture}
         <View style={styles.button}>
           <Button onPress={this.onControl}>暂停/播放</Button>
+          <Button onPress={this.onStop}>停止</Button>
         </View>
       </View>
     );
@@ -151,4 +165,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default connect(state => ({ song: state.song, control: state }), { getControl })(ListenPage);
+export default connect(state => ({ song: state.song, control: state.control }), { getControl })(ListenPage);

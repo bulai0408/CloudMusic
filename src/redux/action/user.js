@@ -1,4 +1,3 @@
-import { GET_SONG_ID_REQUEST } from '../constant';
 import { PHONE_LOGIN_REQUEST, EMAIL_LOGIN_REQUEST } from '../constant';
 
 const doPhoneLogin = (info, navigation) => {

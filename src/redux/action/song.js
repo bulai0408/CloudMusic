@@ -1,4 +1,3 @@
-import { GET_CONTROL_REQUEST } from '../constant';
 import { GET_SONG_ID_REQUEST } from '../constant';
 
 const getSongId = (id, navigation) => {
