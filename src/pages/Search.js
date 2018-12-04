@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 
 
 import { BACKGROUND_COLOR } from '../constant'
-import { getSongUrl } from '../redux/action/song';
+import { getSongId } from '../redux/action/song';
 
 class Search extends Component {
 
@@ -33,10 +33,9 @@ class Search extends Component {
     this.setState({ songs })
   }
 
-  getSource = async (detail) => {
-    this.props.navigation.navigate('Listen', {
-      detail
-    });
+  getSource = (detail) => {
+    const { getSongId, navigation } = this.props;
+    getSongId(detail.id, navigation);
   }
 
   //播放器
@@ -89,13 +88,13 @@ class Search extends Component {
           renderItem={({ item }) => (
             <TouchableOpacity activeOpacity={0} onPress={() => { this.getSource(item) }}>
               <View style={styles.song} >
-                <View style={{ alignItems: 'flex-start',flex:1 }}>
+                <View style={{ alignItems: 'flex-start', flex: 1 }}>
                   <Text
                     numberOfLines={1}
                     ellipsizeMode={'tail'}
                     style={{ marginBottom: 5, fontSize: 15 }}>{item.name}</Text>
                   {/* 音乐名 */}
-                  <View style={{ flexDirection: 'row', alignItems: 'center',flex:1 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
                     <Text
                       numberOfLines={1}
                       ellipsizeMode={'tail'}
@@ -105,7 +104,7 @@ class Search extends Component {
                     <Text
                       numberOfLines={1}
                       ellipsizeMode={'tail'}
-                      style={{ fontSize: 11, color: '#8B8989',flex:1 }}>{item.album.name}</Text>
+                      style={{ fontSize: 11, color: '#8B8989', flex: 1 }}>{item.album.name}</Text>
                     {/* 专辑名 */}
                   </View>
                   {/* {(Array.isArray(item.alias) && item.alias.length > 0) && <Text style={{ marginTop: 5, fontSize: 13, color: '#8B8989' }}>{item.alias[0]}</Text>} */}
@@ -138,4 +137,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(state => ({ user: state.user }))(Search)
+export default connect(state => ({ song: state.song }), { getSongId })(Search)

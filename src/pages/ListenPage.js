@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Animated, Easing } from 'react-native';
 import axios from 'axios';
 import { Button, Input, H2 } from 'nachos-ui';
 import { StackActions, NavigationActions } from 'react-navigation';
@@ -17,25 +17,48 @@ class ListenPage extends Component {
       status: 1, //0暂停，1播放
       musicUrl: '',
       imgUrl: '',
+      bounceValue: new Animated.Value(1),
+      rotateValue: new Animated.Value(0)
     }
   }
 
   componentDidMount = () => {
     this.ifChangeSong();
+    this.startAnimation();
+  }
+
+  startAnimation = () => {
+    this.state.bounceValue.setValue(1);//和上面初始值一样，所以
+    //弹动没有变化
+    this.state.rotateValue.setValue(0);
+    Animated.parallel([
+      //通过Animated.spring等函数设定动画参数
+      //可选的基本动画类型: spring, decay, timing
+      Animated.spring(this.state.bounceValue, {
+        toValue: 1,      //变化目标值，也没有变化
+        friction: 20,    //friction 摩擦系数，默认40
+      }),
+      Animated.timing(this.state.rotateValue, {
+        toValue: 1,  //角度从0变1
+        duration: 15000,  //从0到1的时间
+        easing: Easing.out(Easing.linear),//线性变化，匀速旋转
+      }),
+      //调用start启动动画,start可以回调一个函数,从而实现动画循环
+    ]).start(() => this.startAnimation());
   }
 
   //是否换歌
-  ifChangeSong=async ()=>{
-    const {song:{id,prevId},getPrevSongId} = this.props;
-    if(id===prevId) { //后退后播放同一首
-      const {data} = await axios.get(`song/detail?ids=${id}`);
+  ifChangeSong = async () => {
+    const { song: { id, prevId }, getPrevSongId } = this.props;
+    if (id === prevId) { //后退后播放同一首
+      const { data } = await axios.get(`song/detail?ids=${id}`);
       const imgUrl = data.songs[0].al.picUrl;
-      this.setState({imgUrl});
+      this.setState({ imgUrl });
       return;
     };
-    if(!prevId) { //如果是听第一首歌
+    if (!prevId) { //如果是听第一首歌
       await this.startSong();
-    getPrevSongId(id);
+      getPrevSongId(id);
       return;
     }
     await this.initialStop();
@@ -122,15 +145,30 @@ class ListenPage extends Component {
 
   componentWillUnmount = () => {
     console.log('88')
-
-    // this.Control.stop();
   }
 
   render() {
-    const { imgUrl } = this.state;
+    const { imgUrl, bounceValue, rotateValue } = this.state;
+
+
+
 
     const Picture = imgUrl ? (
-      <Image style={{ width: 200, height: 200, borderRadius: 100 }} source={{ uri: imgUrl }} />
+      <Animated.Image
+        style={[{ width: 200, height: 200, borderRadius: 100 }, {
+          transform: [
+            //将初始化值绑定到动画目标的style属性上
+            { scale: bounceValue },
+            //使用interpolate插值函数,实现了从数值单位的映
+            //射转换,上面角度从0到1，这里把它变成0-360的变化
+            {
+              rotateZ: rotateValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['0deg', '360deg'],
+              })
+            }]
+        }]}
+        source={{ uri: imgUrl }} />
     ) : undefined
 
     return (
@@ -187,4 +225,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default connect(state => ({ song: state.song, control: state.control }), { getControl,getPrevSongId })(ListenPage);
+export default connect(state => ({ song: state.song, control: state.control }), { getControl, getPrevSongId })(ListenPage);
