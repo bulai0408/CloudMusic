@@ -7,25 +7,47 @@ import Sound from 'react-native-sound';
 import { connect } from 'react-redux';
 
 import { getControl } from '../redux/action/control';
+import { getPrevSongId } from '../redux/action/song';
+
 
 class ListenPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      status: 0, //0暂停，1播放
+      status: 1, //0暂停，1播放
       musicUrl: '',
       imgUrl: '',
     }
   }
 
-  componentDidMount = async () => {
+  componentDidMount = () => {
+    this.ifChangeSong();
+  }
+
+  //是否换歌
+  ifChangeSong=async ()=>{
+    const {song:{id,prevId},getPrevSongId} = this.props;
+    if(id===prevId) { //后退后播放同一首
+      const {data} = await axios.get(`song/detail?ids=${id}`);
+      const imgUrl = data.songs[0].al.picUrl;
+      this.setState({imgUrl});
+      return;
+    };
+    if(!prevId) { //如果是听第一首歌
+      await this.startSong();
+    getPrevSongId(id);
+      return;
+    }
     await this.initialStop();
     await this.startSong();
+    getPrevSongId(id);
   }
 
   //初始化时停止在播音乐
   initialStop = () => {
     if (!this.onStop()) return;
+    const { song: { id } } = this.props;
+
     this.onStop();
   }
 
@@ -67,7 +89,7 @@ class ListenPage extends Component {
   onControl = () => {
     const { status } = this.state;
     const { control } = this.props;
-    console.log(control);
+    console.log(status);
     const statusArray = [0, 1];
     status === statusArray[0] && this.onGo()
     status === statusArray[1] && this.onPause();
@@ -100,11 +122,11 @@ class ListenPage extends Component {
 
   componentWillUnmount = () => {
     console.log('88')
+
     // this.Control.stop();
   }
 
   render() {
-    console.log(this.props.control);
     const { imgUrl } = this.state;
 
     const Picture = imgUrl ? (
@@ -165,4 +187,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default connect(state => ({ song: state.song, control: state.control }), { getControl })(ListenPage);
+export default connect(state => ({ song: state.song, control: state.control }), { getControl,getPrevSongId })(ListenPage);

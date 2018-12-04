@@ -1,4 +1,4 @@
-import { GET_SONG_ID_REQUEST } from '../constant';
+import { GET_SONG_ID_REQUEST, GET_PREV_SONG_ID } from '../constant';
 
 const getSongId = (id, navigation) => {
   return {
@@ -8,6 +8,15 @@ const getSongId = (id, navigation) => {
   }
 }
 
+const getPrevSongId = (prevId, navigation) => {
+  return {
+    type: GET_PREV_SONG_ID,
+    prevId,
+    navigation
+  }
+}
+
 export {
   getSongId,
+  getPrevSongId
 }
