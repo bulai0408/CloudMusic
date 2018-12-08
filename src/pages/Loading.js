@@ -8,13 +8,13 @@ export default class Loading extends Component {
     const resetAction = StackActions.reset({
       index: 0,
       actions: [
-        NavigationActions.navigate({ routeName: 'Home' })
+        NavigationActions.navigate({ routeName: 'DrawNavigator' })
         // NavigationActions.navigate({ routeName: 'Login' })
       ],
     });
     this.timer = setTimeout(() => {
       this.props.navigation.dispatch(resetAction);
-    }, 500);
+    }, 1000);
   }
 
   componentWillUnmount = () => {
@@ -22,6 +22,7 @@ export default class Loading extends Component {
   }
 
   render() {
+    console.log(this.props);
     return (
       <View style={styles.container}>
         <ImageBackground source={require('../image/welcome.jpeg')} style={{ flex: 1 }} />

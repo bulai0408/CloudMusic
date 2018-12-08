@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, TextInput } from 'react-native';
-import { createStackNavigator } from "react-navigation";
+import { createStackNavigator, createSwitchNavigator } from "react-navigation";
 import { ThemeProvider, Input } from "nachos-ui";
 
 import AppScreen from '../App';
@@ -14,6 +14,7 @@ import ListenPageScreen from '../src/pages/ListenPage';
 import SongListScreen from '../src/pages/SongList';
 import SongListDetailScreen from '../src/pages/SongListDetail';
 
+import DrawNavigator from './drawNavigation';
 
 export const AppNavigator = createStackNavigator({
   Loading: {
@@ -69,10 +70,16 @@ export const AppNavigator = createStackNavigator({
     screen: SongListDetailScreen,
     navigationOptions: {
     }
-  }
-
-});
-
+  },
+  DrawNavigator: {
+    screen: DrawNavigator,
+    navigationOptions: {
+      header: null
+    }
+  },
+}, {
+    initialRouteName: 'Loading'
+  });
 
 export default (MyApp = () => (
   <ThemeProvider

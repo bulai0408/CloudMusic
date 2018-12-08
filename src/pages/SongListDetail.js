@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { bindActionCreators } from 'redux';
 
 import { getSongId } from '../redux/action/song';
+import toast from '../util';
 
 class SongListDetail extends Component {
   constructor(props) {
@@ -24,6 +25,7 @@ class SongListDetail extends Component {
     const { navigation } = this.props;
     const id = navigation.getParam('id');
     const { data: { playlist: { tracks } } } = await axios.get(`/playlist/detail?id=${id}`);
+    console.log(tracks);
     const newTracks = tracks.map(item => {
       return {
         album: item.al, //专辑
@@ -76,6 +78,11 @@ class SongListDetail extends Component {
   /**跳转到听歌界面 入参歌曲详情 跳转传参歌曲 */
   toListenPage = async (detail) => {
     const { getSongId, navigation } = this.props;
+    const { data } = await axios.get(`check/music?id=${detail.id}`);
+    if (!data.success) {
+      toast('暂无版权...', 'TOP');
+      return;
+    }
     getSongId(detail.id, navigation) //将当前播放音乐的id存放在redux
   }
 
@@ -93,7 +100,7 @@ class SongListDetail extends Component {
           return (
             <TouchableOpacity activeOpacity={1} onPress={() => this.toListenPage(item)}>
               <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                <Text style={{ padding: 15 }}>{i.index + 1}</Text>
+                <Text style={{ width:40,textAlign:'center' }}>{i.index + 1}</Text>
                 <View style={{ borderBottomColor: '#F2F2F2', borderBottomWidth: 1, padding: 8, flex: 1 }}>
                   <Text
                     style={{ marginBottom: 5 }}

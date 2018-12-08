@@ -83,10 +83,6 @@ class ListenPage extends Component {
       .then(res => {
         const musicUrl = res[0].data.data[0].url;
         const imgUrl = res[1].data.songs[0].al.picUrl;
-        if (!musicUrl) {
-          navigation.goBack();
-          return;
-        }
         this.Control = this.Sound(musicUrl);
         getControl(this.Control, navigation); //同步控制器到redux
         this.setState({

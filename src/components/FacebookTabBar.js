@@ -42,9 +42,16 @@ class FacebookTabBar extends React.Component {
         this.props.navigation.navigate('Search')
     }
 
+    openMenu = () => {
+        this.props.navigation.openDrawer();
+    }
+
     render() {
+        console.log(this.props);
         return <View style={[styles.tabs, this.props.style,]}>
-            <Icon name='ios-menu' size={30} tabLabel='ios-menu' style={{ paddingLeft: 20,color:'white' }} />
+            <TouchableOpacity onPress={this.openMenu}>
+                <Icon name='ios-menu' size={30} tabLabel='ios-menu' style={{ paddingLeft: 20, color: 'white' }} />
+            </TouchableOpacity>
             {this.props.tabs.map((tab, i) => {
                 return <TouchableOpacity
                     key={tab}
@@ -59,7 +66,7 @@ class FacebookTabBar extends React.Component {
                     />
                 </TouchableOpacity>;
             })}
-            <Icon name='ios-search' onPress={this.onSearch} size={30} tabLabel='ios-search' style={{ paddingRight: 20,color:'white'  }} />
+            <Icon name='ios-search' onPress={this.onSearch} size={30} tabLabel='ios-search' style={{ paddingRight: 20, color: 'white' }} />
         </View>;
     }
 }

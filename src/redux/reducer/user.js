@@ -4,7 +4,10 @@ import {
   PHONE_LOGIN_SUCCEED,
   EMAIL_LOGIN_SUCCEED,
   PHONE_LOGIN_FAILURE,
-  EMAIL_LOGIN_FAILURE
+  EMAIL_LOGIN_FAILURE,
+  LOG_OUT_REQUEST,
+  LOG_OUT_SUCCEED,
+  LOG_OUT_FAILED
 } from '../constant';
 
 const initialState = {
@@ -34,6 +37,24 @@ const user = (state = initialState, action = {}) => {
         isFetching: false,
         error: action.error,
         user: null
+      }
+    case LOG_OUT_REQUEST:
+      return {
+        isFetching: true,
+        error: null,
+        user: state.user
+      }
+    case LOG_OUT_SUCCEED:
+      return {
+        isFetching: false,
+        error: null,
+        user: null
+      }
+    case LOG_OUT_FAILED:
+      return {
+        isFetching: false,
+        error: action.error,
+        user: state.user
       }
     default:
       return state;

@@ -1,4 +1,4 @@
-import { PHONE_LOGIN_REQUEST, EMAIL_LOGIN_REQUEST } from '../constant';
+import { PHONE_LOGIN_REQUEST, EMAIL_LOGIN_REQUEST, LOG_OUT_REQUEST } from '../constant';
 
 const doPhoneLogin = (info, navigation) => {
   return {
@@ -16,7 +16,15 @@ const doEmailLogin = (info, navigation) => {
   }
 }
 
+const doLogout = (navigation) => {
+  return {
+    type: LOG_OUT_REQUEST,
+    navigation
+  }
+}
+
 export {
   doPhoneLogin,
-  doEmailLogin
+  doEmailLogin,
+  doLogout
 }
