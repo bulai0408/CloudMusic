@@ -1,6 +1,6 @@
 /** @format */
 import React from 'react';
-import { AppRegistry } from 'react-native';
+import { AppRegistry, View, Text } from 'react-native';
 import App from './navigation';
 import { name as appName } from './app.json';
 import axios from 'axios';

@@ -45,7 +45,7 @@ class SongList extends Component {
 
   getSongList = async () => {
     try {
-      // const { user: { user: { id } } } = this.props;
+      // const { user: { user: { account: { id } } } } = this.props;
       const id = 116368939;
       const { data: { playlist } } = await axios.get(`user/playlist?uid=${id}`);
       this.setState({ playlist, userId: id })

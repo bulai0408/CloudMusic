@@ -1,6 +1,6 @@
 import React from 'react';
 import { createDrawerNavigator, SafeAreaView, DrawerItems } from 'react-navigation';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -41,25 +41,32 @@ class CustomDrawerContentComponent extends React.Component {
     doLogout(navigation)
   }
   render() {
+    const { user: { user } } = this.props;
+    console.log(user);
+    // const { nickname, backgroundUrl } = profile;
+    const avatarUrl = 'https://p1.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg';
+    const nickname = '丶不赖';
+
     return (
       <View style={{ flex: 1 }}>
-        <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
-          <Text>1</Text>
+        <SafeAreaView  forceInset={{ top: 'always', horizontal: 'never' }}>
+          <Image style={{ width: 50, height: 50, borderRadius: 25,marginLeft:15 }} source={{ uri: avatarUrl }} />
+          <Text>{nickname}</Text>
         </SafeAreaView>
         <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
           <DrawerItems {...this.props} />
         </SafeAreaView>
         <SafeAreaView style={{ justifyContent: 'space-between', alignItems: 'center', borderTopWidth: 1, borderTopColor: '#F2F2F2', flexDirection: 'row', padding: 8 }} >
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center',paddingLeft:10 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingLeft: 10 }}>
             <Icon name='ios-moon' size={25} tabLabel='ios-moon' style={{ color: 'black', marginRight: 5 }} />
             <Text style={{ fontSize: 14 }}>夜间模式</Text>
           </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             <Icon name='ios-settings' size={25} tabLabel='ios-settings' style={{ color: 'black', marginRight: 5 }} />
             <Text style={{ fontSize: 14 }}>设置</Text>
           </View>
           <TouchableOpacity activeOpacity={1} onPress={this.onLogout}>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center',paddingRight:10  }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingRight: 10 }}>
               <Icon name='ios-power' size={25} tabLabel='ios-power' style={{ color: 'black', marginRight: 5 }} />
               <Text style={{ fontSize: 14 }}>退出</Text>
             </View>
@@ -70,7 +77,7 @@ class CustomDrawerContentComponent extends React.Component {
   }
 }
 
-const DrawerContent = connect(state => ({}), { doLogout })(CustomDrawerContentComponent)
+const DrawerContent = connect(state => ({ user: state.user }), { doLogout })(CustomDrawerContentComponent)
 
 
 const DrawNavigator = createDrawerNavigator(

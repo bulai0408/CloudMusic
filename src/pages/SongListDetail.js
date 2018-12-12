@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux';
 
 import { getSongId } from '../redux/action/song';
 import toast from '../util';
+import ListeningControl from '../components/ListeningControl';
 
 class SongListDetail extends Component {
   constructor(props) {
@@ -25,7 +26,6 @@ class SongListDetail extends Component {
     const { navigation } = this.props;
     const id = navigation.getParam('id');
     const { data: { playlist: { tracks } } } = await axios.get(`/playlist/detail?id=${id}`);
-    console.log(tracks);
     const newTracks = tracks.map(item => {
       return {
         album: item.al, //专辑
@@ -37,7 +37,7 @@ class SongListDetail extends Component {
     this.setState({
       songListSource: newTracks,
       isFetching: false
-    })
+    }, () => console.log(this.state.songListSource))
     // const list = [];
     // const hasSongCanUse = tracks.map(item => {
     //   return Promise.all([
@@ -87,7 +87,13 @@ class SongListDetail extends Component {
   }
 
   render() {
+
     const { songListSource, isFetching } = this.state;
+    const { song, control } = this.props;
+    const { id } = song;
+    const { status } = control;
+
+
     const showingList = (
       <FlatList
         data={songListSource}
@@ -100,7 +106,7 @@ class SongListDetail extends Component {
           return (
             <TouchableOpacity activeOpacity={1} onPress={() => this.toListenPage(item)}>
               <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                <Text style={{ width:40,textAlign:'center' }}>{i.index + 1}</Text>
+                <Text style={{ width: 40, textAlign: 'center' }}>{i.index + 1}</Text>
                 <View style={{ borderBottomColor: '#F2F2F2', borderBottomWidth: 1, padding: 8, flex: 1 }}>
                   <Text
                     style={{ marginBottom: 5 }}
@@ -127,6 +133,8 @@ class SongListDetail extends Component {
       />
     )
 
+
+
     return (
       <View style={styles.container}>
         <Spinner
@@ -135,6 +143,7 @@ class SongListDetail extends Component {
           textStyle={{ color: '#FFF', fontSize: 15, marginBottom: 60 }}
         />
         {showingList}
+        {(id && status === 1) ? <ListeningControl /> : null}
       </View>
     );
   }
@@ -203,4 +212,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(state => ({ id: state.id }), { getSongId })(SongListDetail)
+export default connect(state => ({ song: state.song, control: state.control }), { getSongId })(SongListDetail)

@@ -18,7 +18,7 @@ import {
 function* phoneLogin({ info: { phone, password }, navigation }) {
     try {
         const user = yield call(axios.get, `http://cloud-music-api.cyhbulai.top/login/cellphone?phone=${phone}&password=${password}`);
-        yield put({ type: PHONE_LOGIN_SUCCEED, user: user.data.account });
+        yield put({ type: PHONE_LOGIN_SUCCEED, user: user.data });
         const resetToHome = StackActions.reset({
             index: 0,
             actions: [
