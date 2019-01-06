@@ -6,8 +6,10 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Modal from "react-native-modalbox";
 
 import { doPhoneLogin } from '../redux/action/user';
+import { addSongList } from '../redux/action/songList';
 
 class SongList extends Component {
   constructor(props) {
@@ -36,6 +38,9 @@ class SongList extends Component {
       userId: 0,
       createHide: false,
       subscribeHide: false,
+      createSongListVisible: false,
+      songListTitle: '',
+      songListStatus: 'normal',
     }
   }
 
@@ -72,7 +77,26 @@ class SongList extends Component {
     })
   }
 
+  modal_show_songListConfig = () => {
+    this.refs.SongListConfig.open();
+  }
+
+  modal_show_addSongList = () => {
+    this.refs.SongListConfig.close();
+    this.refs.AddSongList.open();
+  }
+
+  modal_hide_addSongList = () => {
+    this.refs.AddSongList.close();
+  }
+
+  handleAddSonglist = () => {
+    const { songListTitle } = this.state;
+    addSongList(songListTitle);
+  }
+
   render() {
+    console.log(this.props.songList);
     const { topMenu, playlist, userId } = this.state;
     const menuRender = topMenu.map((item, index) => (
       <View key={index.toString()} style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 5, paddingBottom: 5, borderBottomWidth: 1, borderBottomColor: '#F8F8F8' }}>
@@ -85,20 +109,54 @@ class SongList extends Component {
     const createList = playlist.filter(item => item.creator.userId === userId)
     const subscribeList = playlist.filter(item => item.creator.userId !== userId)
 
-    const { createHide, subscribeHide } = this.state;
+    const { createHide, subscribeHide, songListTitle, songListStatus } = this.state;
 
     return (
       <View style={styles.container}>
+        <Modal
+          style={{ justifyContent: 'center', alignItems: 'center', height: 200, borderRadius: 10 }}
+          position={"bottom"}
+          backdropPressToClose={true}
+          backdrop={true}
+          ref={"SongListConfig"}
+        >
+          <TouchableOpacity activeOpacity={1} onPress={this.modal_show_addSongList} >
+            <Text>创建新歌单</Text>
+          </TouchableOpacity>
+          {/* <TouchableOpacity activeOpacity={1} onPress={this.changeCreateHide} >
+            <Text>歌单管理</Text>
+          </TouchableOpacity> */}
+        </Modal>
+        <Modal style={{ height: 180, borderRadius: 4, width: '80%', padding: 25 }} ref={"AddSongList"}>
+          <Text style={{ fontSize: 18 }}>新建歌单</Text>
+          <Input
+            style={{ borderLeftWidth: 0, borderRightWidth: 0, borderTopWidth: 0, marginTop: 25, marginBottom: 25 }}
+            placeholder='请输入歌单标题'
+            value={songListTitle}
+            status={songListStatus}
+            onChangeText={songListTitle => this.setState({ songListTitle })}
+          />
+          <View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
+            <Text onPress={this.modal_hide_addSongList}>取消</Text>
+            <Text style={{ marginLeft: 25 }} onPress={this.handleAddSonglist} >提交</Text>
+          </View>
+        </Modal>
         <ScrollView style={{ flex: 1 }}>
           {menuRender}
-          <TouchableOpacity activeOpacity={1} onPress={this.changeCreateHide}>
-            <View style={{ padding: 8, backgroundColor: '#DCDCDC', flexDirection: 'row', alignItems: 'center' }}>
-              <View style={createHide ? '' : styles.create}>
-                <View style={styles.icon} />
+          <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#DCDCDC' }}>
+            <TouchableOpacity activeOpacity={1} onPress={this.changeCreateHide} style={{ width: '85%' }}>
+              <View style={{ padding: 8, flexDirection: 'row', alignItems: 'center' }}>
+                <View style={createHide ? '' : styles.create}>
+                  <View style={styles.icon} />
+                </View>
+                <Text style={{ marginLeft: 10 }} >创建的歌单</Text>
               </View>
-              <Text style={{ marginLeft: 10 }} >创建的歌单</Text>
-            </View>
-          </TouchableOpacity>
+
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={1} onPress={this.modal_show_songListConfig} style={{ flex: 1 }}>
+              <Icon name='ios-settings' size={30} tabLabel='ios-settings' style={{ paddingLeft: 20 }} />
+            </TouchableOpacity>
+          </View>
           <FlatList
             data={createList}
             style={[{ paddingLeft: 5, paddingRight: 5 }, createHide ? styles.createlist : '']}
@@ -140,6 +198,7 @@ class SongList extends Component {
             )}
           />
         </ScrollView>
+
       </View>
     );
   }
@@ -208,4 +267,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(state => ({ user: state.user }))(SongList)
+export default connect(state => ({ songList: state.songList }), { addSongList })(SongList)
